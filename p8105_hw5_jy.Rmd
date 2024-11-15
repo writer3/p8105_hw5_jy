@@ -29,6 +29,7 @@ Load key packages
 ```{r}
 library(tidyverse)
 library(broom)
+library(purrr)
 set.seed(1000)
 ```
 
@@ -122,5 +123,19 @@ baltimore_prop =
 
 broom::tidy(baltimore_prop) |> 
   knitr::kable(digits = 4)
+```
+
+
+Using `purrr` package to run prop.test for each of the cities and extracting both the proportion of `unsolved_homicides` and the confidence interval. 
+
+```{r}
+homicide_plot = 
+homicide_city_df |> 
+  mutate(
+    props = map2(unsolved_homicides, total_homicides, \(x, y) prop.test(x = x, n = y)),
+    tidy_props = map(props, broom::tidy)
+  ) |> 
+  unnest(tidy_props) |> 
+  select(city_state, estimate, conf.low, conf.high)
 ```
 
