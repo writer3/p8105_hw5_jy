@@ -79,8 +79,6 @@ The shape of the function is a sigmoid function. Larger the group size, higher t
 
 ## Problem 3
 
-Describe the raw data. Create a city_state variable (e.g. “Baltimore, MD”) and then summarize within cities to obtain the total number of homicides and the number of unsolved homicides (those for which the disposition is “Closed without arrest” or “Open/No arrest”).
-
 Creating a `city_state` variable, tidying, and summarizing within cities to obtain the total number of homicides and the number of unsolved homicides. 
 
 
@@ -88,9 +86,26 @@ Creating a `city_state` variable, tidying, and summarizing within cities to obta
 homicide_df = 
   read_csv("data/homicide-data.csv", na = c("", "NA", "Unknown")) |> 
   mutate(
-    city_state = str_c(city, state, sep = ", ")
+    city_state = str_c(city, state, sep = ", "),
+    outcome = 
+      ifelse(disposition %in% c("Closed without arrest", "Open/No arrest"), "unsolved", "solved")
+    )
+```
+
+The dataframe `homicide_df` has `r nrow(homicide_df)` rows and `r ncol(homicide_df)` columns representing more than 52000 criminal homicides over the past decade in 50 of the largest American cities, obtained by Washington Post. The data includes the id, date, location of homicide, demographic information about the victim, `city_state` variable that describes city and state, and `outcome` variable describing the  whether an arrest was made.
+
+
+Obtaining the total number of homicides and the number of unsolved homicides by `city_state`. 
+
+```{r}
+homicide_df |> 
+  group_by(city_state) |> 
+  summarize(
+    total_homicides = n(),
+    unsolved_homicides = sum(outcome == "unsolved")
   )
 ```
 
 
+For the city of Baltimore, MD, use the prop.test function to estimate the proportion of homicides that are unsolved; save the output of prop.test as an R object, apply the broom::tidy to this object and pull the estimated proportion and confidence intervals from the resulting tidy dataframe.
 
