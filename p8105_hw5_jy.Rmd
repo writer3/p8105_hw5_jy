@@ -139,3 +139,16 @@ homicide_city_df |>
   select(city_state, estimate, conf.low, conf.high)
 ```
 
+
+Creating a plot that shows the estimates and CIs for each city, organized according to the proportion of unsolved homicides.
+
+```{r}
+homicide_plot |> 
+  mutate(city_state = fct_reorder(city_state, estimate)) |> 
+  ggplot(aes(x = city_state, y = estimate)) +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high)) +
+  theme(axis.text.x = element_text(angle = 90))
+```
+
+
