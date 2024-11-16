@@ -132,11 +132,38 @@ sim_results_other_df |>
   
 ```
  
-Greater effect size is associated with larger power of the t-test.  
+Effect size is positively associated with power of the t-test.  
+ 
  
 
+Making a plot showing the average estimate of μ on the y axis and the true value of μ on the x axis. 
+
+```{r}
+sim_results_other_df |> 
+  group_by(mu) |> 
+  summarize(avg_estimate = mean(estimate)) |> 
+  ggplot(aes(x = mu, y = avg_estimate)) +
+  geom_point() +
+  geom_line() +
+  labs(x = "True Value of μ", y = "Average Estimtae of μ", title = "Average Estimate of Mu varied by True Values of Mu")
+```
 
 
+Making a plot showing the average estimate of μ only in samples for which the null was rejected on the y axis and the true value of μ on the x axis. 
+
+```{r}
+sim_results_other_df |> 
+  filter(p.value <= 0.05) |> 
+  group_by(mu) |> 
+  summarize(avg_estimate = mean(estimate)) |> 
+  ggplot(aes(x = mu, y = avg_estimate)) +
+  geom_point() +
+  geom_line() +
+  labs(x = "True Value of μ", y = "Average Estimtae of μ", title = "Average Estimate of Mu Only in Samples for which null was rejected varied by True Values of Mu")
+```
+
+
+The sample average of μ^ across tests for which the null is rejected is not approximately equal to the true value of μ. At the 5% level of significance, there is 5% chance that the null hypothesis is rejected even though it is actually true. This would result in the average of estimated means across the tests to not be exactly equal to the true value of the sample mean.  
 
 
 ## Problem 3
