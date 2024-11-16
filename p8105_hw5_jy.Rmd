@@ -91,14 +91,22 @@ Fixing n=30 and σ=5. Setting μ=0. Generating 5000 datasets from the model.
 sim_t = function(n = 30, mu = mu, sigma = 5) {
   
   sim_data = tibble(
-    x = rnorm(n, mean = mu, sd = sigma),
+    x = rnorm(n, mean = mu, sd = sigma)
   )
  
-  sim_t_results = broom::tidy(t.test(sim_data)
+  sim_t_results = broom::tidy(t.test(sim_data$x)
     )
 }
 
+sim_results_df = 
+  expand_grid(
+    mu = 0,
+    iter = 1:5000
+  ) |> 
+  mutate(estimate_df = map(mu, ~ sim_t(mu = .x))) |> 
+  unnest(estimate_df)
 
+sim_results_df
 ```
 
 
