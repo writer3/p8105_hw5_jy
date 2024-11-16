@@ -61,7 +61,7 @@ sim_res =
     n = c(2:50),
     iter = 1:10000
   ) |> 
-  mutate(res = map_lgl(n, bday_sim)) |>  #mutate, map across n sample size, can use map_lgl here since we know the function would result in TRUE or FALSE
+  mutate(res = map_lgl(n, bday_sim)) |> 
   group_by(n) |> 
     summarize(prob = mean(res))
 ```
@@ -77,6 +77,29 @@ sim_res |>
 
 The shape of the function is a sigmoid function. Larger the group size, higher the probability of at least two people in a group sharing a same birthday. 
 
+
+## Problem 2
+
+For each dataset, save μ^
+ and the p-value arising from a test of H:μ=0
+ using α=0.05
+. Hint: to obtain the estimate and p-value, use broom::tidy to clean the output of t.test.
+
+
+Fixing n=30 and σ=5. Setting μ=0. Generating 5000 datasets from the model. 
+```{r}
+sim_t = function(n = 30, mu = mu, sigma = 5) {
+  
+  sim_data = tibble(
+    x = rnorm(n, mean = mu, sd = sigma),
+  )
+ 
+  sim_t_results = broom::tidy(t.test(sim_data)
+    )
+}
+
+
+```
 
 
 ## Problem 3
@@ -150,5 +173,4 @@ homicide_plot |>
   geom_errorbar(aes(ymin = conf.low, ymax = conf.high)) +
   theme(axis.text.x = element_text(angle = 90))
 ```
-
 
